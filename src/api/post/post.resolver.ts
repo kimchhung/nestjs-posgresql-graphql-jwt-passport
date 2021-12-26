@@ -68,16 +68,16 @@ export class PostResolver {
         this.prisma.post.findMany({
           include: { author: true },
           where: {
-            publishedAt: new Date(),
+            NOT: [{ publishedAt: null }],
             title: { contains: query || '' },
           },
-          orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : null,
+          orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
           ...args,
         }),
       () =>
         this.prisma.post.count({
           where: {
-            publishedAt: new Date(),
+            NOT: [{ publishedAt: null }],
             title: { contains: query || '' },
           },
         }),
@@ -90,14 +90,13 @@ export class PostResolver {
   userPosts(@Args() id: UserIdArgs) {
     return this.prisma.user
       .findUnique({ where: { id: id.userId } })
-      .posts({ where: { publishedAt: new Date() } });
+      .posts({ where: { NOT: [{ publishedAt: null }] } });
 
-    // or
-    // return this.prisma.posts.findMany({
+    // return this.prisma.post.findMany({
     //   where: {
-    //     publishedAt: new Date(),
-    //     author: { id: id.userId }
-    //   }
+    //     NOT: [{ publishedAt: null }],
+    //     author: { id: id.userId },
+    //   },
     // });
   }
 

@@ -32,8 +32,10 @@ input LoginInput {
 type Mutation {
   changePassword(data: ChangePasswordInput!): User!
   createPost(data: CreatePostInput!): Post!
+  deleteUser: User!
   login(data: LoginInput!): Auth!
   refreshToken(token: String!): Token!
+  restoreDeletedUser: User!
   signup(data: SignupInput!): Auth!
   updateUser(data: UpdateUserInput!): User!
 }
@@ -59,9 +61,6 @@ type Post {
 
   """Identifies the date and time when the object was created."""
   createdAt: Date!
-
-  """Identifies the date and time when the object was was deleted."""
-  deletedAt: Date
   id: ID!
   publishedAt: Date
   title: String!
@@ -138,9 +137,6 @@ input UpdateUserInput {
 type User {
   """Identifies the date and time when the object was created."""
   createdAt: Date!
-
-  """Identifies the date and time when the object was was deleted."""
-  deletedAt: Date
   email: String!
   firstname: String
   id: ID!

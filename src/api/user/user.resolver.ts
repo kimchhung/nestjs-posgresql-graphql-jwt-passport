@@ -39,6 +39,18 @@ export class UserResolver {
 
   @UseGuards(GqlAuthGuard)
   @Mutation(() => User)
+  async deleteUser(@UserEntity() user: User) {
+    return this.userService.softDeleteUser(user.id);
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => User)
+  async restoreDeletedUser(@UserEntity() user: User) {
+    return this.userService.restoreDeletedUser(user.id);
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => User)
   async changePassword(
     @UserEntity() user: User,
     @Args('data') changePassword: ChangePasswordInput,

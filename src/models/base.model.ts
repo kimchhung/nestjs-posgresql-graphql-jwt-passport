@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, HideField, ID, ObjectType } from '@nestjs/graphql';
 
 @ObjectType({ isAbstract: true })
 export abstract class BaseModel {
@@ -16,9 +16,7 @@ export abstract class BaseModel {
   })
   updatedAt: Date;
 
-  @Field({
-    description:
-      'Identifies the date and time when the object was was deleted.',
-  })
+  // ! Identifies the date and time when the object was deleted.
+  @HideField()
   deletedAt?: Date;
 }

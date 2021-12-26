@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Chance } from 'chance';
-import { AppService } from 'src/app.service';
+import { AppService } from 'src/services/app.service';
 import { AppResolver } from './app.resolver';
 
 const chance = new Chance();

@@ -20,6 +20,24 @@ export class UserService {
     });
   }
 
+  softDeleteUser(userId: string) {
+    return this.prisma.user.update({
+      data: { deletedAt: new Date() },
+      where: {
+        id: userId,
+      },
+    });
+  }
+
+  restoreDeletedUser(userId: string) {
+    return this.prisma.user.update({
+      data: { deletedAt: null },
+      where: {
+        id: userId,
+      },
+    });
+  }
+
   async changePassword(
     userId: string,
     userPassword: string,

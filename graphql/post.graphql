@@ -41,7 +41,7 @@ fragment PostData on Post {
   id
   createdAt
   updatedAt
-  published
+  publishedAt
   title
   content
 }
