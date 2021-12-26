@@ -2,16 +2,15 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { PrismaModule } from 'nestjs-prisma';
+import { AuthModule } from './api/auth/auth.module';
+import { PostModule } from './api/post/post.module';
+import { UserModule } from './api/user/user.module';
+import { AppController } from './app.controller';
+import { AppResolver } from './app.resolver';
 import { DateScalar } from './common/scalars/date.scalar';
 import config from './configs/config';
 import { GraphqlConfig } from './configs/config.interface';
-
-import { AuthModule } from './api/auth/auth.module';
 import { AppService } from './services/app.service';
-import { UserModule } from './api/user/user.module';
-import { PostModule } from './api/post/post.module';
-import { AppController } from './app.controller';
-import { AppResolver } from './app.resolver';
 
 @Module({
   imports: [
