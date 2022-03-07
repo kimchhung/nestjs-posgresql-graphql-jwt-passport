@@ -1,66 +1,54 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { PrismaService } from 'nestjs-prisma';
-import { PasswordService } from 'src/services/password.service';
-import { ChangePasswordInput } from './dto/change-password.input';
-import { UpdateUserInput } from './dto/update-user.input';
-
+// src/user/user.service.ts
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import * as Chance from 'chance';
+import { FilterQuery, PaginateModel } from 'mongoose';
+import { CreateUserArg } from './dto/user.arg.ts';
+import { User, UserDocument } from './dto/user.model';
+import { UserPagination } from './dto/user.pagination';
 @Injectable()
 export class UserService {
   constructor(
-    private prisma: PrismaService,
-    private passwordService: PasswordService,
+    @InjectModel(User.name)
+    private userModel: PaginateModel<UserDocument>,
   ) {}
 
-  updateUser(userId: string, newUserData: UpdateUserInput) {
-    return this.prisma.user.update({
-      data: newUserData,
-      where: {
-        id: userId,
-      },
-    });
+  async create(userData: CreateUserArg): Promise<UserDocument> {
+    const createdUser = this.userModel.create(userData);
+    return createdUser;
   }
 
-  softDeleteUser(userId: string) {
-    return this.prisma.user.update({
-      data: { deletedAt: new Date() },
-      where: {
-        id: userId,
-      },
-    });
+  async findOne(query: FilterQuery<User>): Promise<User> {
+    return this.userModel.findOne(query).lean();
   }
 
-  restoreDeletedUser(userId: string) {
-    return this.prisma.user.update({
-      data: { deletedAt: null },
-      where: {
-        id: userId,
-      },
-    });
+  async find(): Promise<User[]> {
+    const users = this.userModel.find().lean();
+
+    return users;
   }
 
-  async changePassword(
-    userId: string,
-    userPassword: string,
-    changePassword: ChangePasswordInput,
-  ) {
-    const passwordValid = await this.passwordService.validatePassword(
-      changePassword.oldPassword,
-      userPassword,
-    );
+  async paginate(query?: FilterQuery<UserDocument>, options?: any) {
+    return new Object(
+      this.userModel.paginate(query, options),
+    ) as Promise<UserPagination>;
+  }
 
-    if (!passwordValid) {
-      throw new BadRequestException('Invalid password');
+  async dump(amount: Number) {
+    const users: User[] = [];
+
+    for (let i = 0; i < amount; i++) {
+      const chance = new Chance();
+      const userData = {
+        age: chance.age(),
+        name: chance.name(),
+        lean: true,
+        email: chance.email(),
+      };
+      const newUser = await this.create(userData);
+      users.push(newUser);
     }
 
-    const hashedPassword = await this.passwordService.hashPassword(
-      changePassword.newPassword,
-    );
-
-    return this.prisma.user.update({
-      data: {
-        password: hashedPassword,
-      },
-      where: { id: userId },
-    });
+    return users;
   }
 }

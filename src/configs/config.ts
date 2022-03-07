@@ -7,23 +7,14 @@ const config: Config = {
   cors: {
     enabled: true,
   },
-  swagger: {
-    enabled: true,
-    title: 'Nestjs FTW',
-    description: 'The nestjs API description',
-    version: '1.5',
-    path: 'api',
-  },
   graphql: {
-    playgroundEnabled: true,
+    playground: true,
     debug: true,
-    schemaDestination: './src/schema.graphql',
+    autoSchemaFile: './src/schema.graphql',
     sortSchema: true,
   },
-  security: {
-    expiresIn: '2m',
-    refreshIn: '7d',
-    bcryptSaltOrRound: 10,
+  mongodb: {
+    uri: 'mongodb://mongoadmin:mongoadmin@localhost:27017/',
   },
 };
 

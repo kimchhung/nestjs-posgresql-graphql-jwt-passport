@@ -1,69 +1,38 @@
-import { UseGuards } from '@nestjs/common';
+// src/user/user.resolver.ts
+import { Injectable } from '@nestjs/common';
 import {
   Args,
+  ArgsType,
   Mutation,
-  Parent,
   Query,
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { PrismaService } from 'nestjs-prisma';
-import { UserEntity } from '../../decorators/user.decorator';
-import { GqlAuthGuard } from '../../guards/gql-auth.guard';
-import { User } from '../../models/user.model';
-import { ChangePasswordInput } from './dto/change-password.input';
-import { UpdateUserInput } from './dto/update-user.input';
+
+import { CreateUserArg, optionArgs } from './dto/user.arg.ts';
+import { User, UserDocument } from './dto/user.model';
+import { UserPagination } from './dto/user.pagination';
 import { UserService } from './user.service';
-
+@Injectable()
 @Resolver(() => User)
-@UseGuards(GqlAuthGuard)
 export class UserResolver {
-  constructor(
-    private userService: UserService,
-    private prisma: PrismaService,
-  ) {}
+  constructor(private _user: UserService) {}
 
-  @Query(() => User)
-  async me(@UserEntity() user: User): Promise<User> {
-    return user;
-  }
-
-  @UseGuards(GqlAuthGuard)
   @Mutation(() => User)
-  async updateUser(
-    @UserEntity() user: User,
-    @Args('data') newUserData: UpdateUserInput,
-  ) {
-    return this.userService.updateUser(user.id, newUserData);
+  async createUser(@Args('userData') userData: CreateUserArg) {
+    return this._user.create(userData);
   }
 
-  @UseGuards(GqlAuthGuard)
-  @Mutation(() => User)
-  async deleteUser(@UserEntity() user: User) {
-    return this.userService.softDeleteUser(user.id);
+  @Mutation(() => [User])
+  async dumpUsers(@Args('amount') amount: number) {
+    const users = this._user.dump(amount);
+    return users;
   }
 
-  @UseGuards(GqlAuthGuard)
-  @Mutation(() => User)
-  async restoreDeletedUser(@UserEntity() user: User) {
-    return this.userService.restoreDeletedUser(user.id);
-  }
+  @Query(() => UserPagination)
+  async users(@Args('options') options?: optionArgs) {
+    const userPagination = await this._user.paginate({}, options);
 
-  @UseGuards(GqlAuthGuard)
-  @Mutation(() => User)
-  async changePassword(
-    @UserEntity() user: User,
-    @Args('data') changePassword: ChangePasswordInput,
-  ) {
-    return this.userService.changePassword(
-      user.id,
-      user.password,
-      changePassword,
-    );
-  }
-
-  @ResolveField('posts')
-  posts(@Parent() author: User) {
-    return this.prisma.user.findUnique({ where: { id: author.id } }).posts();
+    return userPagination;
   }
 }
