@@ -5,36 +5,36 @@ export default function Paginated<TItem>(TItemClass: Type<TItem>) {
   // `isAbstract` decorator option is mandatory to prevent registering in schema
   @ObjectType({ isAbstract: true })
   abstract class PaginatedType {
-    @Field(() => TItemClass)
-    docs: TItem;
+    @Field(() => [TItemClass], { nullable: 'itemsAndList' })
+    docs: TItem[];
 
-    @Field(() => Int)
+    @Field()
     totalDocs: number;
 
-    @Field(() => Int)
+    @Field()
     limit: number;
 
     // * Page info
 
-    @Field(() => Int)
+    @Field()
     page: number;
 
-    @Field(() => Int)
+    @Field()
     totalPages: number;
 
-    @Field(() => Boolean)
+    @Field()
     hasNextPage: boolean;
 
-    @Field(() => Boolean)
+    @Field()
     hasPrevPage: boolean;
 
-    @Field(() => Int)
+    @Field({ nullable: true })
     nextPage: number;
 
-    @Field(() => Int)
+    @Field({ nullable: true })
     prevPage: number;
 
-    @Field(() => Int)
+    @Field()
     pagingCounter: number;
   }
   return PaginatedType;

@@ -2,8 +2,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as Chance from 'chance';
-import { FilterQuery, PaginateModel } from 'mongoose';
-import { CreateUserArg } from './dto/user.arg.ts';
+import { FilterQuery, PaginateModel, PaginateOptions } from 'mongoose';
+import { CreateUserInput } from './dto/user.input.ts';
+
 import { User, UserDocument } from './dto/user.model';
 import { UserPagination } from './dto/user.pagination';
 @Injectable()
@@ -13,7 +14,7 @@ export class UserService {
     private userModel: PaginateModel<UserDocument>,
   ) {}
 
-  async create(userData: CreateUserArg): Promise<UserDocument> {
+  async create(userData: CreateUserInput): Promise<User> {
     const createdUser = this.userModel.create(userData);
     return createdUser;
   }
@@ -24,11 +25,10 @@ export class UserService {
 
   async find(): Promise<User[]> {
     const users = this.userModel.find().lean();
-
     return users;
   }
 
-  async paginate(query?: FilterQuery<UserDocument>, options?: any) {
+  async paginate(query?: FilterQuery<User>, options?: PaginateOptions) {
     return new Object(
       this.userModel.paginate(query, options),
     ) as Promise<UserPagination>;

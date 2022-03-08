@@ -1,25 +1,24 @@
-query Me {
-  me {
-    ...UserData
+query {
+  users(page: 1, limit: 500) {
+    docs {
+      email
+      name
+      age
+    }
+    hasNextPage
+    hasPrevPage
+    limit
+    nextPage
+    prevPage
+    page
+    totalDocs
+    totalPages
+    pagingCounter
   }
 }
 
-mutation UpdateUser {
-  updateUser(data: { firstname: "Bart", lastname: "Simpson" }) {
-    ...UserData
+mutation {
+  dumpUsers(amount: 10000) {
+    name
   }
-}
-
-mutation ChangePassword {
-  changePassword(data: { oldPassword: "secret42", newPassword: "secret42" }) {
-    ...UserData
-  }
-}
-
-fragment UserData on User {
-  id
-  email
-  firstname
-  lastname
-  role
 }

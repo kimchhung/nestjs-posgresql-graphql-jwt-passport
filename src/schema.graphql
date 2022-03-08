@@ -2,21 +2,21 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-input CreateUserArg {
+input CreateUserInput {
   age: Int!
   email: String!
   name: String!
 }
 
 type Mutation {
-  createUser(userData: CreateUserArg!): User!
+  createUser(userData: CreateUserInput!): User!
   dumpUsers(amount: Int!): [User!]!
 }
 
 type Query {
   hello(name: String!): String!
   helloWorld: String!
-  users(options: optionArgs!): UserPagination!
+  users(allowDiskUse: Boolean, forceCountFn: Boolean, lean: Boolean, leanWithId: Boolean, limit: Int, offset: Int, page: Int, pagination: Boolean, select: String, sort: String, useEstimatedCount: Boolean): UserPagination!
 }
 
 type User {
@@ -26,23 +26,14 @@ type User {
 }
 
 type UserPagination {
-  docs: User!
+  docs: [User]
   hasNextPage: Boolean!
   hasPrevPage: Boolean!
   limit: Int!
-  nextPage: Int!
+  nextPage: Int
   page: Int!
   pagingCounter: Int!
-  prevPage: Int!
+  prevPage: Int
   totalDocs: Int!
   totalPages: Int!
-}
-
-input optionArgs {
-  lean: Boolean
-  leanWithId: Boolean
-  limit: Int
-  offset: Int
-  page: Int
-  pagination: Boolean
 }
